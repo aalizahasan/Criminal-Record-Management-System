@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Average Hearings Per Case</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1c1f26;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    select, .button {
+      padding: 10px;
+      margin-top: 20px;
+      background-color: #2e3548;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 5px;
+      width: 100%;
+    }
+    .button {
+      cursor: pointer;
+      text-align: center;
+    }
+    .button:hover {
+      background-color: #3f4a61;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Average Hearings for Selected Case</h1>
+
+  <select id="caseSelect">
+    <option disabled selected>Select a Case ID</option>
+  </select>
+
+  <div class="button" id="showAverage">Show Average Hearings</div>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    $(document).ready(function () {
+      // Load Case IDs
+      $.get('http://localhost:3000/cases', function (cases) {
+        cases.forEach(c => {
+          $('#caseSelect').append(`<option value="${c.Case_Id}">${c.Case_Id}</option>`);
+        });
+      });
+
+      // Fetch and display average on button click
+      $('#showAverage').click(function () {
+        const caseId = $('#caseSelect').val();
+        if (!caseId) {
+          $('#result').html('<p>Please select a Case ID first.</p>');
+          return;
+        }
+
+        $.get(`http://localhost:3000/average-hearings/${caseId}`, function (data) {
+          $('#result').html(`Case ID <b>${data.caseId}</b> has <b>${data.hearingCount}</b> hearings.`);
+        }).fail(function () {
+          $('#result').html('<p>Error fetching data. Check server or Case ID.</p>');
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

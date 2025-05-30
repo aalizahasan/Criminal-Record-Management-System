@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Cases - CrimeRecordDB</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1c1f26;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #3f4a61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .button:hover {
+      background-color: #576382;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #2e3548;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #3f4a61;
+    }
+    tr:hover {
+      background-color: #394154;
+    }
+    .button-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CrimeRecordDB - Cases</h1>
+
+  <div class="button-container">
+    <button id="viewCases" class="button">View All Cases</button>
+    <a href="3rd.html" target="_blank" class="button">Get Average Hearings</a>
+  </div>
+
+  <div id="casesSection"></div>
+
+  <script>
+    $(document).ready(function () {
+      $('#viewCases').click(function () {
+        $.get('http://localhost:3000/cases', function (data) {
+          if (data.length === 0) {
+            $('#casesSection').html('<p>No case records found.</p>');
+            return;
+          }
+
+          let tableHtml = `
+            <table>
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Case No</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Officer</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Court</th>
+                  <th>Judge</th>
+                  <th>Lawyer</th>
+                  <th>Sentence</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          data.forEach(c => {
+            tableHtml += `
+              <tr>
+                <td>${c.Case_Id}</td>
+                <td>${c.Case_No}</td>
+                <td>${c.Case_type}</td>
+                <td>${c.Case_Status}</td>
+                <td>${c.Investigation_Officer}</td>
+                <td>${c.Starting_Date}</td>
+                <td>${c.End_Date || 'N/A'}</td>
+                <td>${c.Court_Name}</td>
+                <td>${c.Judge_Name}</td>
+                <td>${c.Lawyer_Name}</td>
+                <td>${c.Sentence}</td>
+                <td>${c.Case_description}</td>
+              </tr>
+            `;
+          });
+
+          tableHtml += `</tbody></table>`;
+          $('#casesSection').html(tableHtml);
+        }).fail(function () {
+          $('#casesSection').html('<p>Error fetching case data.</p>');
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

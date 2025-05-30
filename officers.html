@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Officers - CrimeRecordDB</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1c1f26;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #3f4a61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .button:hover {
+      background-color: #576382;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #2e3548;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #3f4a61;
+    }
+    tr:hover {
+      background-color: #394154;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CrimeRecordDB - Officers</h1>
+  <button id="viewOfficers" class="button">View All Officers</button>
+
+  <div id="officersSection"></div>
+
+  <script>
+    $(document).ready(function () {
+      $('#viewOfficers').click(function () {
+        $.get('http://localhost:3000/officers', function (data) {
+          if (data.length === 0) {
+            $('#officersSection').html('<p>No officer records found.</p>');
+            return;
+          }
+
+          let tableHtml = `
+            <table>
+              <thead>
+                <tr>
+                  <th>Officer ID</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Rank</th>
+                  <th>Department</th>
+                  <th>Date of Birth</th>
+                  <th>Date of Joining</th>
+                  <th>Phone No</th>
+                  <th>Status</th>
+                  <th>Badge No</th>
+                  <th>Case ID</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          data.forEach(o => {
+            tableHtml += `
+              <tr>
+                <td>${o.Officer_id}</td>
+                <td>${o.First_Name}</td>
+                <td>${o.Last_Name}</td>
+                <td>${o.O_Rank}</td>
+                <td>${o.Department}</td>
+                <td>${o.Date_of_Birth}</td>
+                <td>${o.Date_of_Joining}</td>
+                <td>${o.Phone_No}</td>
+                <td>${o.Officer_Status}</td>
+                <td>${o.Badge_No}</td>
+                <td>${o.Case_Id}</td>
+              </tr>
+            `;
+          });
+
+          tableHtml += `</tbody></table>`;
+          $('#officersSection').html(tableHtml);
+        }).fail(function () {
+          $('#officersSection').html('<p>Error fetching officer data.</p>');
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

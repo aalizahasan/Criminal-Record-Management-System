@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Evidence - CrimeRecordDB</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1c1f26;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #3f4a61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .button:hover {
+      background-color: #576382;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #2e3548;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #3f4a61;
+    }
+    tr:hover {
+      background-color: #394154;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CrimeRecordDB - Evidence</h1>
+  <button id="viewEvidence" class="button">View All Evidence</button>
+
+  <div id="evidenceSection"></div>
+
+  <script>
+    $(document).ready(function () {
+      $('#viewEvidence').click(function () {
+        $.get('http://localhost:3000/evidence', function (data) {
+          if (data.length === 0) {
+            $('#evidenceSection').html('<p>No evidence records found.</p>');
+            return;
+          }
+
+          let tableHtml = `
+            <table>
+              <thead>
+                <tr>
+                  <th>Evidence_ID</th>
+                  <th>Evidence_Type</th>
+                  <th>E_Description</th>
+                  <th>Collected_By</th>
+                  <th>Collection_Date</th>
+                  <th>Storage_Location</th>
+                  <th>Evidence_Status</th>
+                  <th>Associated_Suspect</th>
+                  <th>Case_ID</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          data.forEach(e => {
+            tableHtml += `
+              <tr>
+                <td>${e.Evidence_Id}</td>
+                <td>${e.Evidence_type}</td>
+                <td>${e.E_Description}</td>
+                <td>${e.Collected_by}</td>
+                <td>${e.Collection_Date}</td>
+                <td>${e.Storage_location}</td>
+                <td>${e.Evidence_status}</td>
+                <td>${e.Associated_suspect}</td>
+                <td>${e.Case_Id}</td>
+              </tr>
+            `;
+          });
+
+          tableHtml += `</tbody></table>`;
+          $('#evidenceSection').html(tableHtml);
+        }).fail(function () {
+          $('#evidenceSection').html('<p>Error fetching evidence data.</p>');
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

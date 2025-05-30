@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Criminals - CrimeRecordDB</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1c1f26;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #3f4a61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .button:hover {
+      background-color: #576382;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #2e3548;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #3f4a61;
+    }
+    tr:hover {
+      background-color: #394154;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CrimeRecordDB - Criminals</h1>
+  <button id="viewCriminals" class="button">View All Criminals</button>
+
+  <div id="criminalsSection"></div>
+
+  <script>
+    $(document).ready(function () {
+      $('#viewCriminals').click(function () {
+        $.get('http://localhost:3000/criminals', function (data) {
+          if (data.length === 0) {
+            $('#criminalsSection').html('<p>No criminal records found.</p>');
+            return;
+          }
+
+          let tableHtml = `
+            <table>
+              <thead>
+                <tr>
+                  <th>Criminal ID</th>
+                  <th>Name</th>
+                  <th>Gender</th>
+                  <th>Age</th>
+                  <th>Crime Committed</th>
+                  <th>Arrest Date</th>
+                  <th>Status</th>
+                  <th>Case ID</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          data.forEach(c => {
+            tableHtml += `
+              <tr>
+                <td>${c.Criminal_Id}</td>
+                <td>${c.C_Name}</td>
+                <td>${c.Gender}</td>
+                <td>${c.Age}</td>
+                <td>${c.Crime_Type}</td>
+                <td>${c.Arrest_Date}</td>
+                <td>${c.C_Status}</td>
+                <td>${c.Case_Id}</td>
+              </tr>
+            `;
+          });
+
+          tableHtml += `</tbody></table>`;
+          $('#criminalsSection').html(tableHtml);
+        }).fail(function () {
+          $('#criminalsSection').html('<p>Error fetching criminal data.</p>');
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
